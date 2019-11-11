@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">ToolsApp</string>
+    <string name="running">Route in process…</string>
+    <string name="noti_id" translatable="false">Speedmeterisanid</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBUBDXV8sPSQE5ecqKkMfCnqbsN4ybOT2I</string>
+</resources>

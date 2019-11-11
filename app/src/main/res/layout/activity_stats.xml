@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".StatsActivity">
+
+    <com.jjoe64.graphview.GraphView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/footer"
+        android:id="@+id/graph" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/footer"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/maxspeed"
+            android:textColor="#acacab"
+            android:text="Max Speed"
+            android:textSize="18dp"
+            android:gravity="center"
+            android:padding="20dp"
+            android:background="#171515"
+            android:layout_width="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:id="@+id/avgspeed"
+            android:textColor="#171515"
+            android:text="Avg Speed"
+            android:textSize="18dp"
+            android:gravity="center"
+            android:background="#acacab"
+            android:padding="20dp"
+            android:layout_width="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+</RelativeLayout>
