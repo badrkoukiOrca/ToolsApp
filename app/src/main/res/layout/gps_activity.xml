@@ -10,25 +10,24 @@
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_margin="20dp"
         android:layout_width="match_parent"
-        android:layout_height="300dp" />
+        android:layout_height="250dp" />
 
     <com.jignesh13.speedometer.SpeedoMeterView
         android:id="@+id/speedometerview"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_above="@id/speed_view"
         android:layout_centerHorizontal="true"
         app:backimage="@android:color/white"
+        android:layout_below="@id/map"
         app:needlecolor="#2962FF"
         app:removeborder="false"
         app:linecolor="#2962FF" />
     <com.github.capur16.digitspeedviewlib.DigitSpeedView
         android:id="@+id/speed_view"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/footer"
+        android:layout_height="80dp"
+        android:layout_below="@id/speedometerview"
         app:speed="0"
         app:showUnit="true"
         app:speedTextColor="#171515"

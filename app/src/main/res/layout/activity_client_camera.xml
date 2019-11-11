@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/relative"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+    <LinearLayout
+        android:id="@+id/videorecord"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentRight="true"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+
+        android:layout_height="wrap_content">
+        <Chronometer
+            android:id="@+id/chrono"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <ImageView
+            android:id="@+id/reddot"
+            android:layout_marginLeft="10dp"
+            android:backgroundTint="#D32F2F"
+            android:background="@drawable/round_btn"
+            android:layout_width="15dp"
+            android:layout_height="15dp"/>
+    </LinearLayout>
+
+
+    <ImageButton
+        android:background="@drawable/record"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/record"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        />
+</RelativeLayout>
