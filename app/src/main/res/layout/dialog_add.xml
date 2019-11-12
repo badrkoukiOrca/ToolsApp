@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Ajouter une réservation"
-        android:textColor="@android:color/black"
+        android:textColor="@android:color/white"
         android:gravity="center"
         android:textSize="25sp"
         android:layout_marginBottom="15dp"/>
@@ -19,14 +19,22 @@
     <EditText
         android:id="@+id/titre"
         android:layout_width="match_parent"
+        android:textColorHint="@android:color/white"
         android:layout_height="wrap_content"
         android:hint="Titre"/>
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:gravity="center"
+    android:layout_height="wrap_content">
     <EditText
         android:id="@+id/h_debut"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="Heure début"
         android:drawableRight="@mipmap/ic_time"
+        android:textColorHint="@android:color/white"
+        android:textColor="@android:color/white"
         android:cursorVisible="false"
         android:focusable="false"
         android:layout_gravity="center"
@@ -35,11 +43,15 @@
         android:id="@+id/h_fin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColorHint="@android:color/white"
+        android:textColor="@android:color/white"
         android:hint="Heure fin"
         android:drawableRight="@mipmap/ic_time"
         android:cursorVisible="false"
         android:focusable="false"
         android:layout_gravity="center"/>
+</LinearLayout>
+
 
     <Button
         android:id="@+id/valider"

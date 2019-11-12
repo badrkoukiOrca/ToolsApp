@@ -2,6 +2,7 @@ package com.i.toolsapp.Agenda.Dialogs
 
 import android.app.Dialog
 import android.app.TimePickerDialog
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -93,6 +94,7 @@ class DialogAddEvent(var time : Calendar) : DialogFragment(), TimePickerDialog.O
         val btnOk = dialog.findViewById<Button>(R.id.ok)
         val btnAnnuler = dialog.findViewById<Button>(R.id.annuler)
         val nbPicker = dialog.findViewById<NumberPicker>(R.id.number_picker)
+
         nbPicker.maxValue = 59
         nbPicker.minValue=0
         nbPicker.wrapSelectorWheel=false

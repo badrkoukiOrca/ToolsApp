@@ -15,8 +15,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <Button
-            android:id="@+id/AgendaBtn"
+            android:id="@+id/GpsBtn"
 
+            android:textColor="#000"
+            android:text="GPS Service"
+            android:background="@drawable/round_corner_btn"
+            android:padding="10dp"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"/>
+
+
+        <Button
+            android:id="@+id/AgendaBtn"
+            android:layout_marginTop="20dp"
             android:textColor="#000"
             android:text="Agenda"
             android:background="@drawable/round_corner_btn"
@@ -28,15 +39,6 @@
             android:layout_marginTop="20dp"
             android:textColor="#000"
             android:text="Streaming"
-            android:background="@drawable/round_corner_btn"
-            android:padding="10dp"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"/>
-        <Button
-            android:id="@+id/GpsBtn"
-            android:layout_marginTop="20dp"
-            android:textColor="#000"
-            android:text="GPS Service"
             android:background="@drawable/round_corner_btn"
             android:padding="10dp"
             android:layout_width="200dp"
