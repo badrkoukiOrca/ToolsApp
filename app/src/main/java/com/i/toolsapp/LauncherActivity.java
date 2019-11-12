@@ -13,14 +13,17 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.i.toolsapp.Agenda.MainActivity;
 import com.i.toolsapp.GPS.GpsActivity;
 import com.i.toolsapp.Streaming.StreamingConnection;
+
 
 public class LauncherActivity extends AppCompatActivity implements View.OnClickListener{
 
 
     Button StreamingBtn;
     Button GpsBtn ;
+    Button AgendaBtn ;
 
     int PERMISSION_ALL = 1;
     String[] PERMISSIONS = {
@@ -29,7 +32,9 @@ public class LauncherActivity extends AppCompatActivity implements View.OnClickL
             android.Manifest.permission.READ_EXTERNAL_STORAGE,
             android.Manifest.permission.CAMERA,
             android.Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.READ_CALENDAR,
+            Manifest.permission.WRITE_CALENDAR
     };
 
 
@@ -40,10 +45,15 @@ public class LauncherActivity extends AppCompatActivity implements View.OnClickL
 
         StreamingBtn = findViewById(R.id.StreamingBtn);
         GpsBtn = findViewById(R.id.GpsBtn);
+        AgendaBtn = findViewById(R.id.AgendaBtn);
+
+
         GpsBtn.setOnClickListener(this);
         StreamingBtn.setOnClickListener(this);
+        AgendaBtn.setOnClickListener(this);
 
         GpsBtn.setEnabled(false);
+
         StreamingBtn.setEnabled(false);
 
         if(!hasPermissions(LauncherActivity.this, PERMISSIONS)){
@@ -60,6 +70,9 @@ public class LauncherActivity extends AppCompatActivity implements View.OnClickL
         switch (view.getId()){
             case R.id.StreamingBtn:
                 startActivity(new Intent(LauncherActivity.this, StreamingConnection.class));
+                break;
+            case R.id.AgendaBtn:
+                startActivity(new Intent(LauncherActivity.this, MainActivity.class));
                 break;
             case R.id.GpsBtn:
                 startActivity(new Intent(LauncherActivity.this, GpsActivity.class));

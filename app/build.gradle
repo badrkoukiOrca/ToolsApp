@@ -42,4 +42,12 @@ dependencies {
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.15'
     implementation 'org.jcodec:jcodec:0.2.3'
     implementation 'org.jcodec:jcodec-android:0.2.3'
+
+    //For Agenda part
+    implementation 'com.github.kizitonwose:CalendarView:0.2.6'
+
+    def gridlayout_version = "1.0.0"
+    implementation "androidx.gridlayout:gridlayout:$gridlayout_version"
+
+    implementation project(':library')
 }

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="20dp"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ajouter une réservation"
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:textSize="25sp"
+        android:layout_marginBottom="15dp"/>
+
+    <EditText
+        android:id="@+id/titre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Titre"/>
+    <EditText
+        android:id="@+id/h_debut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Heure début"
+        android:drawableRight="@mipmap/ic_time"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:layout_gravity="center"
+        />
+    <EditText
+        android:id="@+id/h_fin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Heure fin"
+        android:drawableRight="@mipmap/ic_time"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:layout_gravity="center"/>
+
+    <Button
+        android:id="@+id/valider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Valider"/>
+</LinearLayout>

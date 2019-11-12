@@ -15,7 +15,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <Button
+            android:id="@+id/AgendaBtn"
+
+            android:textColor="#000"
+            android:text="Agenda"
+            android:background="@drawable/round_corner_btn"
+            android:padding="10dp"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"/>
+        <Button
             android:id="@+id/StreamingBtn"
+            android:layout_marginTop="20dp"
             android:textColor="#000"
             android:text="Streaming"
             android:background="@drawable/round_corner_btn"
@@ -31,6 +41,7 @@
             android:padding="10dp"
             android:layout_width="200dp"
             android:layout_height="wrap_content"/>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

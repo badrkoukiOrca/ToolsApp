@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -31,6 +33,11 @@
         <activity android:name=".Streaming.ClientSide.ClientCamera"/>
         <activity android:name=".Streaming.ServerSide.ServerActivity"/>
         <activity android:name=".Streaming.ClientSide.RenderVideo"/>
+        <activity android:name=".Agenda.MainActivity"/>
+        <activity android:name=".Agenda.Lib1.LibActivity"/>
+        <activity android:name=".Agenda.Lib2.LibActivity2"/>
+        <activity android:name=".Agenda.AndroidCalendarActivity"/>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />

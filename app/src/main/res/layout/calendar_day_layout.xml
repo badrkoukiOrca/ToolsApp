@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/dayContainer"
+    android:gravity="center">
+    <View
+        android:layout_width="1dp"
+        android:layout_height="5dp"
+        android:background="@color/colorPrimary" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp">
+        <TextView
+            android:id="@+id/calendarDayMonth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:textSize="10sp"
+            android:text="22"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:visibility="visible"/>
+
+        <TextView
+            android:id="@+id/calendarDay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:textSize="15sp"
+            android:text="22"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"/>
+        <TextView
+            android:id="@+id/calendarDayName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:layout_margin="8dp"
+            android:text="22"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+    <View
+        android:layout_width="1dp"
+        android:layout_height="5dp"
+        android:background="@color/colorPrimary" />
+
+</LinearLayout>
