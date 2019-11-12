@@ -10,7 +10,7 @@
         android:layout_height="300dp"/>
     <Button
         android:id="@+id/discover_connections"
-        android:text="Start discover connections"
+        android:text="Commencer à découvrir des connexions"
         android:textColor="#fff"
         android:background="#0101b0"
         android:layout_width="match_parent"

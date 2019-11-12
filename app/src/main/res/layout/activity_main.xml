@@ -8,6 +8,27 @@
     tools:context=".LauncherActivity">
 
     <LinearLayout
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_marginTop="50dp"
+        android:gravity="center"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:background="@drawable/settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:text="OUTILS"
+            android:textSize="35dp"
+            android:textStyle="bold"
+            android:textColor="#fff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+
+    <LinearLayout
         android:layout_marginBottom="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         android:orientation="vertical"
@@ -38,7 +59,7 @@
             android:id="@+id/StreamingBtn"
             android:layout_marginTop="20dp"
             android:textColor="#000"
-            android:text="Streaming"
+            android:text="Diffusion à distance"
             android:background="@drawable/round_corner_btn"
             android:padding="10dp"
             android:layout_width="200dp"

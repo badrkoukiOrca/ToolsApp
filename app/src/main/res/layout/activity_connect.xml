@@ -9,7 +9,7 @@
         android:id="@+id/header"
         android:textSize="25dp"
         android:padding="10dp"
-        android:text="devices"
+        android:text="Appareils"
         android:gravity="center"
         android:background="#5E35B1"
         android:textColor="#fff"

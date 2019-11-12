@@ -19,7 +19,7 @@
         <TextView
             android:id="@+id/maxspeed"
             android:textColor="#acacab"
-            android:text="Max Speed"
+            android:text="Max vitesse"
             android:textSize="18dp"
             android:gravity="center"
             android:padding="20dp"
@@ -32,7 +32,7 @@
         <TextView
             android:id="@+id/avgspeed"
             android:textColor="#171515"
-            android:text="Avg Speed"
+            android:text="Vitesse moyenne"
             android:textSize="18dp"
             android:gravity="center"
             android:background="#acacab"
