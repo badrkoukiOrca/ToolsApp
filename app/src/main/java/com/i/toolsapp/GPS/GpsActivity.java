@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.GpsSatellite;
 import android.location.GpsStatus;
 import android.location.Location;
@@ -36,6 +37,9 @@ import com.jignesh13.speedometer.SpeedoMeterView;
 import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class GpsActivity extends AppCompatActivity implements LocationListener, GpsStatus.Listener, OnMapReadyCallback {
@@ -51,6 +55,9 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
     Button stats ;
 
 
+    Double initial_lat;
+    Double initial_long ;
+
     private FloatingActionButton fab;
     private Data.OnGpsServiceUpdate onGpsServiceUpdate;
     private boolean firstfix;
@@ -59,6 +66,10 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gps_activity);
+
+        initial_lat = 36.8355025 ;
+        initial_long = 10.2477709 ;
+
 
         data = new Data(onGpsServiceUpdate);
 
@@ -140,8 +151,33 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
         mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
 
-        chronometer = (Chronometer) findViewById(R.id.chrono);
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy( Criteria.ACCURACY_FINE );
 
+        final String mocLocationProvider = LocationManager.GPS_PROVIDER;
+
+
+        mLocationManager.addTestProvider(mocLocationProvider, false, false,
+                false, false, true, true, true, 0, 5);
+        mLocationManager.setTestProviderEnabled(mocLocationProvider, true);
+
+
+        //************ TODO SIMULATION CODE SNIPPET
+        //set first location -- (For simulate GPS)
+        Location loc = new Location(mocLocationProvider);
+        Location mockLocation = new Location(mocLocationProvider); // a string
+        mockLocation.setLatitude(initial_lat);
+        mockLocation.setLongitude(initial_long);
+        mockLocation.setAltitude(loc.getAltitude());
+        mockLocation.setTime(System.currentTimeMillis());
+        mockLocation.setAccuracy(1);
+        mockLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
+        mLocationManager.setTestProviderLocation( mocLocationProvider, mockLocation);
+        SimulateGPSMouvement(mocLocationProvider); //simulate GPS if you are moving comment this code
+        //************ TODO SIMULATION CODE SNIPPET
+
+
+        chronometer = (Chronometer) findViewById(R.id.chrono);
         chronometer.setText("00:00:00");
         chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             boolean isPair = true;
@@ -185,7 +221,7 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
             SpeedHistory.speedHistory = new ArrayList<>();
             fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_pause));
             data.setRunning(true);
-            chronometer.setBase(SystemClock.elapsedRealtime() - data.getTime());
+            chronometer.setBase(SystemClock.elapsedRealtime());
             chronometer.start();
             data.setFirstTime(true);
             startService(new Intent(getBaseContext(), GpsServices.class));
@@ -251,6 +287,8 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
         userlocation = location ;
         UpdateMap();
 
+        SpeedHistory.speedHistory = new ArrayList<>();
+
         if (location.hasAccuracy()) {
             double acc = location.getAccuracy();
             String units;
@@ -271,18 +309,19 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
         }
 
         if (location.hasSpeed()) {
-            double speed = location.getSpeed() * 3.6;
+
+            //double speed = location.getSpeed() * 3.6;
+            double speed = location.getSpeed() ;
             int speeds = (int) speed;
+
             speedoMeterView.setSpeed(speeds,false);
             speedometer.updateSpeed(speeds);
 
-            if(data.isRunning()){
+            if(data!=null && data.isRunning()){
                 SpeedHistory.speedHistory.add(speed);
             }
 
         }
-
-
 
     }
 
@@ -356,4 +395,45 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
         mMap.addMarker(new MarkerOptions().position(sydney).title("Boat"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
+
+
+    public void SimulateGPSMouvement(final String mocLocationProvider){
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+
+                Location previous_location = new Location("");
+                previous_location.setLatitude(initial_lat);
+                previous_location.setLongitude(initial_long);
+
+                initial_lat += 0.00001; //steps mouvement
+                initial_long += 0.00001; //steps mouvement
+
+                Location new_location = new Location("");
+                new_location.setLatitude(initial_lat);
+                new_location.setLongitude(initial_long);
+
+
+                float distanceInMeters = previous_location.distanceTo(new_location); //distance between the previous location and the new one
+                // in this case distanceInMeters = 1.48 meter
+
+
+                Location loc = new Location(mocLocationProvider);
+                Location mockLocation = new Location(mocLocationProvider); // a string
+                mockLocation.setLatitude(initial_lat);
+                mockLocation.setLongitude(initial_long);
+                mockLocation.setAltitude(loc.getAltitude());
+                mockLocation.setTime(System.currentTimeMillis());
+                mockLocation.setAccuracy(1);
+                Random random = new Random();
+                mockLocation.setSpeed(random.nextInt(56-50)+50); //speed is should be reasonable with distance
+                mockLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
+                mLocationManager.setTestProviderLocation( mocLocationProvider, mockLocation); //invoke location change
+            }
+        }, 0, 100);
+    }
+
 }
