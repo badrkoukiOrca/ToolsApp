@@ -4,41 +4,58 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#fff"
     android:padding="20dp">
 
-    <TextView
-        android:id="@+id/Rname"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="25sp"
-        android:text="Réservation"
-        android:textColor="@android:color/black"
-        android:layout_marginBottom="15dp"
-        />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="15sp"
-        android:text="Info 1"
-        android:textColor="@android:color/black"
-        android:layout_marginBottom="15dp"
-        />
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="15sp"
-        android:text="Info 2"
-        android:textColor="@android:color/black"
-        android:layout_marginBottom="15dp"
-        />
 
-    <Button
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Modifier"/>
-    <Button
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/Rname"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:textSize="25sp"
+            android:text="Réservation"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="15dp"
+            />
+        <ImageButton
+            android:id="@+id/annuler"
+            android:layout_width="0dp"
+            android:layout_weight="0.08"
+            android:layout_height="30dp"
+            android:text="Annuler"
+            android:scaleType="centerInside"
+            android:background="@android:color/transparent"
+            android:src="@mipmap/ic_clear_2"
+            android:layout_gravity="top"/>
+    </LinearLayout>
+
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Annuler"/>
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/modifier"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Modifier"
+            android:background="#00cd00"
+            android:textColor="@android:color/white"/>
+        <Button
+            android:id="@+id/supprimer"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Supprimer"
+            android:layout_marginLeft="12dp"
+            android:background="@android:color/holo_red_light"
+            android:textColor="@android:color/white"/>
+    </LinearLayout>
+
+
 </LinearLayout>

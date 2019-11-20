@@ -9,4 +9,13 @@ interface OnClicked {
     fun onViewClicked(view : View, day : CalendarDay)
 
     fun onHourClicked(event : RowEvent){}
+
+    fun onProfileClicked(profile : String){}
+
+    fun onModifieReservation(oldTitle : String , newTitle : String){}
+
+
+    fun onDeleteReservation(title : String){}
+
+    fun onInterval(interval : Int){}
 }

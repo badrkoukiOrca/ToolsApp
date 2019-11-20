@@ -14,8 +14,6 @@ import com.i.toolsapp.Agenda.Dialogs.DialogDetails
 import com.i.toolsapp.R
 
 
-
-
 class LibActivity : AppCompatActivity() {
 
     val events = mutableListOf<WeekViewEvent>()

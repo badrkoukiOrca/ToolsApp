@@ -11,48 +11,68 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Ajouter une réservation"
-        android:textColor="@android:color/white"
         android:gravity="center"
         android:textSize="25sp"
         android:layout_marginBottom="15dp"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/white"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="13/11/2019"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_marginBottom="12dp"/>dialog_add
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+        <TextView
+            android:id="@+id/debut"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Heure début :"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:visibility="gone"
+            />
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorPrimary"
+            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/fin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="15sp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:text="Heure fin :"
+            android:visibility="gone"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/de_a"
+            android:gravity="center"/>
+    </LinearLayout>
+
     <EditText
         android:id="@+id/titre"
         android:layout_width="match_parent"
-        android:textColorHint="@android:color/white"
         android:layout_height="wrap_content"
         android:hint="Titre"/>
-<LinearLayout
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:gravity="center"
-    android:layout_height="wrap_content">
-    <EditText
-        android:id="@+id/h_debut"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="Heure début"
-        android:drawableRight="@mipmap/ic_time"
-        android:textColorHint="@android:color/white"
-        android:textColor="@android:color/white"
-        android:cursorVisible="false"
-        android:focusable="false"
-        android:layout_gravity="center"
-        />
-    <EditText
-        android:id="@+id/h_fin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColorHint="@android:color/white"
-        android:textColor="@android:color/white"
-        android:hint="Heure fin"
-        android:drawableRight="@mipmap/ic_time"
-        android:cursorVisible="false"
-        android:focusable="false"
-        android:layout_gravity="center"/>
-</LinearLayout>
-
-
     <Button
         android:id="@+id/valider"
         android:layout_width="match_parent"

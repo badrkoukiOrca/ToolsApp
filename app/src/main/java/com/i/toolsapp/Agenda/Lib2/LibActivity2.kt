@@ -13,9 +13,14 @@ import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alamkanak.weekview.WeekViewEvent
+import com.i.toolsapp.Agenda.Dialogs.DialogNumberPicker
 import com.i.toolsapp.Agenda.Lib2.Adapter.DataRow
 import com.i.toolsapp.Agenda.Lib2.Adapter.RecyclerAdapter
 import com.i.toolsapp.Agenda.Lib2.Adapter.RowEvent
+import com.i.toolsapp.Agenda.Lib2.DayViewContainer
+import com.i.toolsapp.Agenda.Lib2.Event
+import com.i.toolsapp.Agenda.Lib2.MonthHeaderView
+import com.i.toolsapp.Agenda.Lib2.OnClicked
 import com.i.toolsapp.R
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.CalendarMonth
@@ -23,26 +28,55 @@ import com.kizitonwose.calendarview.model.DayOwner
 import com.kizitonwose.calendarview.ui.DayBinder
 import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
 import com.kizitonwose.calendarview.ui.MonthScrollListener
-
-
-
 import kotlinx.android.synthetic.main.activity_lib2.*
 import org.threeten.bp.LocalDate
 import org.threeten.bp.YearMonth
+import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.WeekFields
 import java.text.SimpleDateFormat
 import java.util.*
 
-class LibActivity2 : AppCompatActivity(),OnClicked {
+class LibActivity2 : AppCompatActivity(), OnClicked {
     var selectedDate : LocalDate? = null
     var adapter : RecyclerAdapter? =null
-    var INTERVAL : Int = 10
+    var INTERVAL : Int = 15
     val events = mutableListOf<RowEvent>()
+    var profile = ""
+    lateinit var layoutManager: LinearLayoutManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lib2)
+        generateEvents()
+        iniCalendar()
+        val dialog = ProfileDialog(this)
+        dialog.show(supportFragmentManager,"")
+    }
 
 
+    fun init(showDetails : Boolean){
+
+        layoutManager = LinearLayoutManager(this@LibActivity2)
+        recycler.layoutManager = layoutManager
+        adapter = RecyclerAdapter(this@LibActivity2,generateHours(INTERVAL),INTERVAL,this,selectedDate,showDetails)
+        recycler.adapter = adapter
+        if(selectedDate!=null)
+            adapter?.updateHourEvents(getEventByDate(selectedDate!!))
+        else
+            adapter?.updateHourEvents(events)
+
+
+        account.setOnClickListener {
+            val dialog = ProfileDialog(this)
+            dialog.show(supportFragmentManager,"")
+        }
+
+        interval.setOnClickListener {
+            val dialog = DialogNumberPicker(INTERVAL,this)
+            dialog.show(supportFragmentManager,"")
+        }
+    }
+
+    fun iniCalendar(){
         selectedDate = LocalDate.now()
         calendarLib2.dayBinder = object : DayBinder<DayViewContainer>{
             override fun create(view: View) = DayViewContainer(view,this@LibActivity2)
@@ -83,27 +117,8 @@ class LibActivity2 : AppCompatActivity(),OnClicked {
 
 
         calendarLib2.setup(firstMonth, lastMonth, firstDayOfWeek)
-        calendarLib2.scrollToMonth(currentMonth)
-
-
-
-        generateHours(10)
-        generateEvents()
-        recycler.layoutManager = LinearLayoutManager(this@LibActivity2)
-        adapter = RecyclerAdapter(this@LibActivity2,generateHours(10),INTERVAL,this,selectedDate)
-        recycler.adapter = adapter
-
-        intervalOK.setOnClickListener {
-            INTERVAL = interval.text.toString().toInt()
-            adapter = RecyclerAdapter(this@LibActivity2,generateHours(interval.text.toString().toInt()),
-                INTERVAL,this,selectedDate)
-            recycler.adapter = adapter
-        }
-        adapter?.updateHourEvents(events)
-
-        addEvents.setOnClickListener {
-            adapter?.updateHourEvents(events)
-        }
+        //calendarLib2.scrollToMonth(currentMonth)
+        calendarLib2.scrollToDate(LocalDate.now())
     }
 
     override fun onViewClicked(view: View, day: CalendarDay) {
@@ -112,6 +127,8 @@ class LibActivity2 : AppCompatActivity(),OnClicked {
             selectedDate = day.date
             calendarLib2.notifyDayChanged(day)
             oldDate?.let { calendarLib2.notifyDateChanged(it) }
+            adapter?.selectedData = selectedDate
+            adapter?.updateHourEvents(getEventByDate(day.date))
         }
     }
 
@@ -136,20 +153,17 @@ class LibActivity2 : AppCompatActivity(),OnClicked {
 
     fun generateEvents(){
         val events = mutableListOf<RowEvent>()
-        events.add(RowEvent("00:05","00:10","11/11/2019","Réservation 2","#ff00ff"))
-        events.add(RowEvent("00:00","00:05","11/11/2019","Réservation 1","#ffff00"))
+        events.add(RowEvent("00:00","00:$INTERVAL","15/11/2019","Réservation 2","#1261A0"))
 
-        events.add(RowEvent("01:00","01:10","11/11/2019","Réservation 3","#ff4444"))
-        events.add(RowEvent("02:00","02:10","11/11/2019","Réservation 4","#884854"))
+        events.add(RowEvent("01:00","01:$INTERVAL","15/11/2019","Réservation 3","#1261A0"))
+        events.add(RowEvent("02:00","02:$INTERVAL","15/11/2019","Réservation 4","#1261A0"))
         this.events.addAll(events)
     }
 
-
     override fun onHourClicked(event : RowEvent) {
         events.add(event)
-        val e = mutableListOf<RowEvent>()
-        e.add(event)
-        adapter?.updateHourEvents(e)
+        if(selectedDate!=null)
+            adapter?.updateHourEvents(getEventByDate(selectedDate!!))
 
         var eventDate = SimpleDateFormat("dd/MM/yyyy").parse(event.date)
         val start = Calendar.getInstance()
@@ -166,6 +180,25 @@ class LibActivity2 : AppCompatActivity(),OnClicked {
         val result = Event(start,end,event.text)
 
         AddEvent(this@LibActivity2).execute(result)
+    }
+
+    fun getEventByDate(date : LocalDate) : MutableList<RowEvent>{
+
+        val result = mutableListOf<RowEvent>()
+        for(event in events) {
+            val eventDate = LocalDate.parse(event.date, DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+            if(date.isEqual(eventDate))
+                result.add(event)
+        }
+
+        return result
+    }
+
+    override fun onProfileClicked(profile: String) {
+        this.profile = profile
+        init(profile=="PILOTE")
+        if(selectedDate!=null)
+            adapter?.updateHourEvents(getEventByDate(selectedDate!!))
     }
 
     class AddEvent(var context: Context) : AsyncTask<Event, Void, Void?>(){
@@ -189,5 +222,61 @@ class LibActivity2 : AppCompatActivity(),OnClicked {
             super.onPostExecute(result)
             Toast.makeText(context,"Event created", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onModifieReservation(oldTitle: String, newTitle: String) {
+        ModifyEventByTitle(oldTitle,newTitle)
+    }
+
+    override fun onDeleteReservation(title: String) {
+        DeleteReservationByTitle(title)
+
+    }
+
+    fun ModifyEventByTitle(oldTitle: String,newTitle: String){
+        for(event in events){
+            if(event.text.equals(oldTitle)) {
+                event.text = newTitle
+            }
+        }
+
+        if(selectedDate!=null )
+            adapter?.updateHourEvents(getEventByDate(selectedDate!!))
+    }
+
+    fun DeleteReservationByTitle(title : String){
+        for(i in 0..events.size-1){
+            if(events.get(i).text.equals(title)) {
+                events.removeAt(i)
+                break
+            }
+        }
+
+        if(selectedDate!=null )
+            adapter?.updateHourEvents(getEventByDate(selectedDate!!))
+    }
+
+    fun firsVisibleItem() : Int{
+        return layoutManager.findFirstVisibleItemPosition()
+    }
+
+    fun lastVisibleItem() : Int{
+        return layoutManager.findLastVisibleItemPosition()
+    }
+
+    fun updateEventHour(title : String,debut : String,fin : String){
+        for(e in events){
+            if(e.text.equals(title)){
+                e.h_debut = debut
+                e.h_fin = fin
+            }
+        }
+        if(selectedDate!=null)
+            adapter?.updateHourEvents(getEventByDate(selectedDate!!))
+    }
+
+    override fun onInterval(interval: Int) {
+        INTERVAL = interval
+        init(profile == "PILOTE")
     }
 }

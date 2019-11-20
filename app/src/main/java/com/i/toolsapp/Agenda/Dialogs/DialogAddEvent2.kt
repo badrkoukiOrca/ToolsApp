@@ -1,4 +1,4 @@
-package com.i.toolsapp.Agenda.Dialogs
+package  com.i.toolsapp.Agenda.Dialogs
 
 import android.app.Dialog
 import android.app.TimePickerDialog
@@ -13,26 +13,13 @@ import com.alamkanak.weekview.WeekViewEvent
 import com.i.toolsapp.Agenda.Lib2.Adapter.RowEvent
 import com.i.toolsapp.Agenda.Lib2.OnClicked
 import com.i.toolsapp.R
-
-
-
 import kotlinx.android.synthetic.main.activity_lib.*
 import kotlinx.android.synthetic.main.dialog_add.*
 import java.util.*
 import kotlin.random.Random
 
-class DialogAddEvent2(var time : Calendar,var onClicked: OnClicked) : DialogFragment(), TimePickerDialog.OnTimeSetListener {
-    override fun onTimeSet(p0: TimePicker?, p1: Int, p2: Int) {
-        var hour = p1.toString()
-        var min = p2.toString()
-        if(p1<=9)
-            hour = "0"+hour
-        if(p2<=9)
-            min = "0" + min
-        h_fin.setText(hour+":"+min)
-    }
+class DialogAddEvent2(val time : Calendar, var onClicked: OnClicked, var interval : Int) : DialogFragment() {
 
-    private var timeDialog : TimePickerDialog? =null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.dialog_add,container,false)
     }
@@ -40,29 +27,66 @@ class DialogAddEvent2(var time : Calendar,var onClicked: OnClicked) : DialogFrag
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.e("DebugTimeY",time.get(Calendar.YEAR).toString())
+        Log.e("DebugTimeM",time.get(Calendar.MONTH).toString())
+        Log.e("DebugTimeD",time.get(Calendar.DAY_OF_MONTH).toString())
+        Log.e("DebugTimeH",time.get(Calendar.HOUR_OF_DAY).toString())
+        Log.e("DebugTimeMin",time.get(Calendar.MINUTE).toString())
+        Log.e("DebugTimeMin","-------------------------")
+        val h_debut = if(time.get(Calendar.HOUR_OF_DAY)<=9) "0"+time.get(Calendar.HOUR_OF_DAY).toString()
+        else time.get(Calendar.HOUR_OF_DAY).toString()
+        val m_debut = if(time.get(Calendar.MINUTE)<=9) "0"+time.get(Calendar.MINUTE).toString()
+        else time.get(Calendar.MINUTE).toString()
+        Log.e("DebugTimeY",time.get(Calendar.YEAR).toString())
+        Log.e("DebugTimeM",time.get(Calendar.MONTH).toString())
+        Log.e("DebugTimeD",time.get(Calendar.DAY_OF_MONTH).toString())
+        Log.e("DebugTimeH",time.get(Calendar.HOUR_OF_DAY).toString())
+        Log.e("DebugTimeMin",time.get(Calendar.MINUTE).toString())
+        Log.e("DebugTimeMin","-------------------------")
+        val timeFin = Calendar.getInstance()
+        timeFin.set(Calendar.YEAR,time.get(Calendar.YEAR))
+        timeFin.set(Calendar.MONTH,time.get(Calendar.MONTH))
+        timeFin.set(Calendar.DAY_OF_MONTH,time.get(Calendar.DAY_OF_MONTH))
+        timeFin.set(Calendar.HOUR_OF_DAY,time.get(Calendar.HOUR_OF_DAY))
+        timeFin.set(Calendar.MINUTE,time.get(Calendar.MINUTE))
 
+
+        timeFin.add(Calendar.MINUTE,interval)
+        Log.e("DebugTimeY",time.get(Calendar.YEAR).toString())
+        Log.e("DebugTimeM",time.get(Calendar.MONTH).toString())
+        Log.e("DebugTimeD",time.get(Calendar.DAY_OF_MONTH).toString())
+        Log.e("DebugTimeH",time.get(Calendar.HOUR_OF_DAY).toString())
+        Log.e("DebugTimeMin",time.get(Calendar.MINUTE).toString())
+        Log.e("DebugTimeMin","-------------------------")
+        val h_fin = if(timeFin.get(Calendar.HOUR_OF_DAY)<=9) "0"+timeFin.get(Calendar.HOUR_OF_DAY).toString()
+        else timeFin.get(Calendar.HOUR_OF_DAY).toString()
+        val m_fin = if(timeFin.get(Calendar.MINUTE)<=9) "0"+timeFin.get(Calendar.MINUTE).toString()
+        else timeFin.get(Calendar.MINUTE).toString()
+
+
+        val sDate = (if(time.get(Calendar.DAY_OF_MONTH)<=9) "0"+time.get(Calendar.DAY_OF_MONTH).toString() else
+            time.get(Calendar.DAY_OF_MONTH).toString())+"/"+
+                (if(time.get(Calendar.MONTH)<=9) "0"+time.get(Calendar.MONTH).toString() else
+                    time.get(Calendar.MONTH).toString()) + "/"+
+                (if(time.get(Calendar.YEAR)<=9) "0"+time.get(Calendar.YEAR).toString() else
+                    time.get(Calendar.YEAR).toString())
+
+        Log.e("DebugTimeY",time.get(Calendar.YEAR).toString())
+        Log.e("DebugTimeM",time.get(Calendar.MONTH).toString())
+        Log.e("DebugTimeD",time.get(Calendar.DAY_OF_MONTH).toString())
+        Log.e("DebugTimeH",time.get(Calendar.HOUR_OF_DAY).toString())
+        Log.e("DebugTimeMin",time.get(Calendar.MINUTE).toString())
+        Log.e("DebugTimeMin","-------------------------")
+        date.text = sDate
+        debut.text = "Heure début : "+h_debut+":"+m_debut
+        fin.text = "Heure fin : "+h_fin+":"+m_fin
         valider.setOnClickListener {
             if(checkInputs()){
-                val date = (if(time.get(Calendar.DAY_OF_MONTH)<=9) "0"+time.get(Calendar.DAY_OF_MONTH)
-                        else time.get(Calendar.DAY_OF_MONTH).toString()) + "/"+
-                        (if(time.get(Calendar.MONTH)<=9) "0"+time.get(Calendar.MONTH)
-                        else time.get(Calendar.MONTH).toString()) +"/"+time.get(Calendar.YEAR).toString()
-                val event = RowEvent(h_debut.text.toString(),h_fin.text.toString(),date,titre.text.toString(),"#ff1247")
-                onClicked.onHourClicked(event)
+                onClicked.onHourClicked(RowEvent(h_debut+":"+m_debut,h_fin+":"+m_fin,sDate,titre.text.toString(),"#6F6FFF"))
                 dismiss()
             }else {
                 Toast.makeText(context!!,"Vérfier heure debut/fin",Toast.LENGTH_SHORT).show()
             }
-        }
-
-        h_debut.setOnClickListener {
-            showDialog()
-
-        }
-
-        h_fin.setOnClickListener {
-            timeDialog = TimePickerDialog(context!!,this,time.get(Calendar.HOUR_OF_DAY),time.get(Calendar.MINUTE),true)
-            timeDialog?.show()
         }
     }
 
@@ -74,34 +98,10 @@ class DialogAddEvent2(var time : Calendar,var onClicked: OnClicked) : DialogFrag
         dialog!!.window!!.attributes = params as android.view.WindowManager.LayoutParams
     }
 
-    fun showDialog(){
-        val dialog = Dialog(activity!!)
-        dialog.setTitle("Number picker")
-        dialog.setContentView(R.layout.dialog_number_picker)
-        val btnOk = dialog.findViewById<Button>(R.id.ok)
-        val btnAnnuler = dialog.findViewById<Button>(R.id.annuler)
-        val nbPicker = dialog.findViewById<NumberPicker>(R.id.number_picker)
-        nbPicker.maxValue = 59
-        nbPicker.minValue=time.get(Calendar.MINUTE)
-        nbPicker.wrapSelectorWheel=false
-        btnOk.setOnClickListener {
-            val h = if(time.get(Calendar.HOUR_OF_DAY)<=9) "0"+time.get(Calendar.HOUR_OF_DAY).toString()
-            else time.get(Calendar.HOUR_OF_DAY).toString()
-            val m = if (nbPicker.value<=9) "0"+nbPicker.value.toString() else nbPicker.value.toString()
-            h_debut.setText(h + ":" +m)
-            dialog.dismiss()
-        }
-        btnAnnuler.setOnClickListener {
-            dialog.dismiss()
-        }
 
-        val width = (resources.displayMetrics.widthPixels*0.5).toInt()
-        dialog.window?.setLayout(width,LinearLayout.LayoutParams.WRAP_CONTENT)
-        dialog.show()
-    }
 
 
     fun checkInputs() : Boolean{
-        return h_debut.text.isNotEmpty() && h_fin.text.isNotEmpty()
+        return titre.text.isNotEmpty()
     }
 }
