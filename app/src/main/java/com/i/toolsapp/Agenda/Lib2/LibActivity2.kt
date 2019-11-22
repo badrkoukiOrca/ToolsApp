@@ -8,19 +8,14 @@ import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.CalendarContract
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.alamkanak.weekview.WeekViewEvent
 import com.i.toolsapp.Agenda.Dialogs.DialogNumberPicker
+import com.i.toolsapp.Agenda.Dialogs.ProfileDialog
 import com.i.toolsapp.Agenda.Lib2.Adapter.DataRow
 import com.i.toolsapp.Agenda.Lib2.Adapter.RecyclerAdapter
 import com.i.toolsapp.Agenda.Lib2.Adapter.RowEvent
-import com.i.toolsapp.Agenda.Lib2.DayViewContainer
-import com.i.toolsapp.Agenda.Lib2.Event
-import com.i.toolsapp.Agenda.Lib2.MonthHeaderView
-import com.i.toolsapp.Agenda.Lib2.OnClicked
 import com.i.toolsapp.R
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.CalendarMonth
@@ -46,8 +41,8 @@ class LibActivity2 : AppCompatActivity(), OnClicked {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lib2)
-        generateEvents()
         iniCalendar()
+        generateEvents()
         val dialog = ProfileDialog(this)
         dialog.show(supportFragmentManager,"")
     }
@@ -153,11 +148,18 @@ class LibActivity2 : AppCompatActivity(), OnClicked {
 
     fun generateEvents(){
         val events = mutableListOf<RowEvent>()
-        events.add(RowEvent("00:00","00:$INTERVAL","15/11/2019","Réservation 2","#1261A0"))
+        if (selectedDate!=null){
+            events.add(RowEvent("00:00","00:$INTERVAL","${selectedDate!!.dayOfMonth}/${selectedDate!!.month.value}/2019","Réservation 2","#1261A0"))
+            events.add(RowEvent("01:00","01:$INTERVAL","${selectedDate!!.dayOfMonth}/${selectedDate!!.month.value}/2019","Réservation 3","#1261A0"))
+            events.add(RowEvent("02:00","02:$INTERVAL","${selectedDate!!.dayOfMonth}/${selectedDate!!.month.value}/2019","Réservation 4","#1261A0"))
 
-        events.add(RowEvent("01:00","01:$INTERVAL","15/11/2019","Réservation 3","#1261A0"))
-        events.add(RowEvent("02:00","02:$INTERVAL","15/11/2019","Réservation 4","#1261A0"))
+        } else {
+            events.add(RowEvent("00:00","00:$INTERVAL","15/11/2019","Réservation 2","#1261A0"))
+            events.add(RowEvent("01:00","01:$INTERVAL","15/11/2019","Réservation 3","#1261A0"))
+            events.add(RowEvent("02:00","02:$INTERVAL","15/11/2019","Réservation 4","#1261A0"))
+        }
         this.events.addAll(events)
+
     }
 
     override fun onHourClicked(event : RowEvent) {

@@ -1,4 +1,4 @@
-package com.i.toolsapp.Agenda.Lib2.Models
+package com.i.toolsapp.Agenda.Models
 
 import java.util.*
 

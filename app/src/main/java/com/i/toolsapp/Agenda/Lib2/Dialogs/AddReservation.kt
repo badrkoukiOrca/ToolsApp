@@ -1,7 +1,6 @@
-package com.i.toolsapp.Agenda.Dialogs
+package com.i.toolsapp.Agenda.Lib2.Dialogs
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -10,16 +9,16 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.i.toolsapp.Agenda.Lib2.Adapter.RowEvent
-import com.i.toolsapp.Agenda.Lib2.Models.Time
+import com.i.toolsapp.Agenda.Models.Time
 import com.i.toolsapp.Agenda.Lib2.OnClicked
 import com.i.toolsapp.R
-import kotlinx.android.synthetic.main.dialog_add.*
+import kotlinx.android.synthetic.main.dialog_add_reservation.*
 import java.util.*
 
 class AddReservation(val time : Time, var onClicked: OnClicked, var interval : Int, var isPilote : Boolean) : DialogFragment(){
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.dialog_add,container,false)
+        return inflater.inflate(R.layout.dialog_add_reservation,container,false)
     }
 
 

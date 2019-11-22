@@ -10,12 +10,10 @@ import android.view.View.VISIBLE
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.i.toolsapp.Agenda.Dialogs.AddReservation
-import com.i.toolsapp.Agenda.Dialogs.DialogDetails2
-import com.i.toolsapp.Agenda.Lib2.Adapter.DataRow
-import com.i.toolsapp.Agenda.Lib2.Adapter.RowEvent
+import com.i.toolsapp.Agenda.Lib2.Dialogs.AddReservation
+import com.i.toolsapp.Agenda.Lib2.Dialogs.DetailsReservation
 import com.i.toolsapp.Agenda.Lib2.LibActivity2
-import com.i.toolsapp.Agenda.Lib2.Models.Time
+import com.i.toolsapp.Agenda.Models.Time
 import com.i.toolsapp.Agenda.Lib2.OnClicked
 import com.i.toolsapp.R
 import kotlinx.android.synthetic.main.activity_lib2.*
@@ -23,7 +21,6 @@ import kotlinx.android.synthetic.main.event_layout.view.*
 import kotlinx.android.synthetic.main.item_data_row.view.*
 import org.threeten.bp.LocalDate
 import java.text.SimpleDateFormat
-import java.util.*
 
 class RecyclerAdapter(var context: Context, var list : MutableList<DataRow>, var interval : Int, var onClicked: OnClicked,
                       var selectedData : LocalDate?, var showDetails : Boolean) : RecyclerView.Adapter<RecyclerAdapter.Holder>(){
@@ -97,7 +94,7 @@ class RecyclerAdapter(var context: Context, var list : MutableList<DataRow>, var
                     val time = Time(selectedData!!.year,selectedData!!.monthValue,selectedData!!.dayOfMonth,
                         list.get(position).debut.split(":")[0].toInt(),
                         list.get(position).debut.split(":")[1].toInt())
-                    val dialog = AddReservation(time,onClicked,interval,showDetails)
+                    val dialog = AddReservation(time, onClicked, interval, showDetails)
                     if(context is LibActivity2){
                         dialog.show((context as LibActivity2).supportFragmentManager,"")
                     }
@@ -119,7 +116,7 @@ class RecyclerAdapter(var context: Context, var list : MutableList<DataRow>, var
 
                 if(showDetails){
                     layout.img_details.setOnClickListener {
-                            val dialog = DialogDetails2(event,onClicked)
+                            val dialog = DetailsReservation(event, onClicked)
                             if(context is LibActivity2){
                                 dialog.show((context as LibActivity2).supportFragmentManager,"")
                             }
