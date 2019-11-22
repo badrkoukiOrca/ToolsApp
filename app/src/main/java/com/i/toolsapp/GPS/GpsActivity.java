@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Criteria;
 import android.location.GpsSatellite;
 import android.location.GpsStatus;
@@ -29,14 +30,18 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.gson.Gson;
 import com.i.toolsapp.R;
 import com.jignesh13.speedometer.SpeedoMeterView;
 import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -52,11 +57,15 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
     Chronometer chronometer;
     DigitSpeedView speedometer;
     Location userlocation ;
-    Button stats ;
 
 
     Double initial_lat;
     Double initial_long ;
+
+    Calendar date;
+    double speed ;
+
+    public ArrayList<String> seconds = new ArrayList<>();
 
     private FloatingActionButton fab;
     private Data.OnGpsServiceUpdate onGpsServiceUpdate;
@@ -67,30 +76,18 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gps_activity);
 
-        initial_lat = 36.8355025 ;
-        initial_long = 10.2477709 ;
-
+        initial_lat = 42.1071614 ;
+        initial_long = 3.4511115 ;
 
         data = new Data(onGpsServiceUpdate);
+        data.setRunning(false);
+
+
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
 
         fab = findViewById(R.id.fab);
-
-
-        stats = findViewById(R.id.stats);
-        stats.setEnabled(false);
-        stats.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(GpsActivity.this,StatsActivity.class));
-                finish();
-            }
-        });
-
-
-
         speedometer = findViewById(R.id.speed_view);
         speedoMeterView = findViewById(R.id.speedometerview);
 
@@ -102,7 +99,7 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
         onGpsServiceUpdate = new Data.OnGpsServiceUpdate() {
             @Override
             public void update() {
-                double maxSpeedTemp = data.getMaxSpeed();
+                /*double maxSpeedTemp = data.getMaxSpeed();
                 double distanceTemp = data.getDistance();
                 double averageTemp;
                 if (sharedPreferences.getBoolean("auto_average", false)) {
@@ -132,24 +129,15 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
                 SpannableString s = new SpannableString(String.format("%.0f %s", maxSpeedTemp, speedUnits));
                 s.setSpan(new RelativeSizeSpan(0.5f), s.length() - speedUnits.length() - 1, s.length(), 0);
 
-                SpeedHistory.MaxSpeed =  data.getMaxSpeed();
-
                 s = new SpannableString(String.format("%.0f %s", averageTemp, speedUnits));
                 s.setSpan(new RelativeSizeSpan(0.5f), s.length() - speedUnits.length() - 1, s.length(), 0);
 
-                SpeedHistory.AverageSpeed = averageTemp ;
-
-
-
                 s = new SpannableString(String.format("%.3f %s", distanceTemp, distanceUnits));
-                s.setSpan(new RelativeSizeSpan(0.5f), s.length() - distanceUnits.length() - 1, s.length(), 0);
-
-                SpeedHistory.TotalDistance = distanceTemp;
+                s.setSpan(new RelativeSizeSpan(0.5f), s.length() - distanceUnits.length() - 1, s.length(), 0);*/
             }
         };
 
         mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
 
         Criteria criteria = new Criteria();
         criteria.setAccuracy( Criteria.ACCURACY_FINE );
@@ -225,11 +213,13 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
             chronometer.start();
             data.setFirstTime(true);
             startService(new Intent(getBaseContext(), GpsServices.class));
-            stats.setEnabled(true);
-        } else {
+
+        } else
+            {
             fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_play));
             data.setRunning(false);
             stopService(new Intent(getBaseContext(), GpsServices.class));
+            startActivity(new Intent(GpsActivity.this,StatsActivity.class));
         }
     }
 
@@ -237,6 +227,8 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
     @Override
     protected void onResume() {
         super.onResume();
+        seconds = new ArrayList<>();
+        StatsActivity.vitesseList = new ArrayList<>();
         firstfix = true;
         if (!data.isRunning()) {
             Gson gson = new Gson();
@@ -278,6 +270,11 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
     public void onDestroy() {
         super.onDestroy();
         stopService(new Intent(getBaseContext(), GpsServices.class));
+
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.commit();
     }
 
 
@@ -287,7 +284,6 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
         userlocation = location ;
         UpdateMap();
 
-        SpeedHistory.speedHistory = new ArrayList<>();
 
         if (location.hasAccuracy()) {
             double acc = location.getAccuracy();
@@ -309,18 +305,10 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
         }
 
         if (location.hasSpeed()) {
-
-            //double speed = location.getSpeed() * 3.6;
-            double speed = location.getSpeed() ;
+            speed = location.getSpeed() ;
             int speeds = (int) speed;
-
             speedoMeterView.setSpeed(speeds,false);
             speedometer.updateSpeed(speeds);
-
-            if(data!=null && data.isRunning()){
-                SpeedHistory.speedHistory.add(speed);
-            }
-
         }
 
     }
@@ -391,26 +379,30 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
 
     public void  UpdateMap(){
         mMap.clear();
-        LatLng sydney = new LatLng(userlocation.getLatitude(),userlocation.getLongitude());
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Boat"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        LatLng position = new LatLng(userlocation.getLatitude(),userlocation.getLongitude());
+        mMap.addMarker(new MarkerOptions().position(position).title("Boat")).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.boat));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(position));
+        mMap.animateCamera( CameraUpdateFactory.zoomTo( 20.0f ) );
+
+
+
     }
 
 
     public void SimulateGPSMouvement(final String mocLocationProvider){
+
         Timer timer = new Timer();
-        timer.schedule(new TimerTask()
-        {
+        timer.scheduleAtFixedRate(new TimerTask() {
             @Override
-            public void run()
-            {
+            public void run() {
 
                 Location previous_location = new Location("");
                 previous_location.setLatitude(initial_lat);
                 previous_location.setLongitude(initial_long);
 
-                initial_lat += 0.00001; //steps mouvement
-                initial_long += 0.00001; //steps mouvement
+
+                initial_lat += 0.00005; //steps mouvement
+                initial_long += 0.00005; //steps mouvement
 
                 Location new_location = new Location("");
                 new_location.setLatitude(initial_lat);
@@ -429,11 +421,22 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
                 mockLocation.setTime(System.currentTimeMillis());
                 mockLocation.setAccuracy(1);
                 Random random = new Random();
-                mockLocation.setSpeed(random.nextInt(56-50)+50); //speed is should be reasonable with distance
+                mockLocation.setSpeed(random.nextInt(90-10)+10); //speed is should be reasonable with distance
                 mockLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
                 mLocationManager.setTestProviderLocation( mocLocationProvider, mockLocation); //invoke location change
+                if(data.isRunning()){
+                    date = Calendar.getInstance();
+
+                    String time = date.get(Calendar.HOUR_OF_DAY)+":"+(date.get(Calendar.MINUTE))+":"+(date.get(Calendar.SECOND));
+                    if(!seconds.contains(time)){
+                        VitesseData vitesseData = new VitesseData(time,speed);
+                        StatsActivity.vitesseList.add(vitesseData);
+                        seconds.add(time);
+                    }
+                }
+
             }
-        }, 0, 100);
+        }, 0, 1000);
     }
 
 }
