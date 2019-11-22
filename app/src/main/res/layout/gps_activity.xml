@@ -62,15 +62,5 @@
             fab:fab_colorPressed="#ACACAB"
             android:layout_centerInParent="true"
             fab:fab_colorRipple="@color/blue_dark"/>
-        <Button
-            android:textColor="#171515"
-            android:text="Stats"
-            android:id="@+id/stats"
-            android:layout_marginLeft="50dp"
-            android:background="#ffffff"
-            android:layout_width="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:layout_height="50dp"/>
     </RelativeLayout>
 </RelativeLayout>
