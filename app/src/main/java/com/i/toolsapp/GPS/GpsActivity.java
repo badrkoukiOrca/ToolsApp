@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -47,7 +48,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class GpsActivity extends AppCompatActivity implements LocationListener, GpsStatus.Listener, OnMapReadyCallback {
+public class GpsActivity extends AppCompatActivity implements LocationListener, GpsStatus.Listener, OnMapReadyCallback, View.OnClickListener {
 
     private SharedPreferences sharedPreferences;
     private LocationManager mLocationManager;
@@ -58,7 +59,7 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
     DigitSpeedView speedometer;
     Location userlocation ;
 
-
+    Button switcher ;
     Double initial_lat;
     Double initial_long ;
 
@@ -71,6 +72,8 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
     private Data.OnGpsServiceUpdate onGpsServiceUpdate;
     private boolean firstfix;
 
+    boolean auto_gps ;
+    Timer timer ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,8 +93,9 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
         fab = findViewById(R.id.fab);
         speedometer = findViewById(R.id.speed_view);
         speedoMeterView = findViewById(R.id.speedometerview);
-
-
+        switcher = findViewById(R.id.switch_auto_manual);
+        switcher.setOnClickListener(this);
+        auto_gps = true ;
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -136,11 +140,8 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
                 s.setSpan(new RelativeSizeSpan(0.5f), s.length() - distanceUnits.length() - 1, s.length(), 0);*/
             }
         };
-
         mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy( Criteria.ACCURACY_FINE );
+        /*
 
         final String mocLocationProvider = LocationManager.GPS_PROVIDER;
 
@@ -161,8 +162,11 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
         mockLocation.setAccuracy(1);
         mockLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
         mLocationManager.setTestProviderLocation( mocLocationProvider, mockLocation);
-        SimulateGPSMouvement(mocLocationProvider); //simulate GPS if you are moving comment this code
-        //************ TODO SIMULATION CODE SNIPPET
+         //simulate GPS if you are moving comment this code
+        //************ TODO SIMULATION CODE SNIPPET*/
+
+
+
 
 
         chronometer = (Chronometer) findViewById(R.id.chrono);
@@ -282,7 +286,9 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
     public void onLocationChanged(Location location) {
 
         userlocation = location ;
-        UpdateMap();
+        if(mMap!=null){
+            UpdateMap();
+        }
 
 
         if (location.hasAccuracy()) {
@@ -370,9 +376,8 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(0, 0);
+        LatLng sydney = new LatLng(initial_lat, initial_long);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Boat"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
@@ -389,54 +394,55 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
     }
 
 
-    public void SimulateGPSMouvement(final String mocLocationProvider){
-
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-
-                Location previous_location = new Location("");
-                previous_location.setLatitude(initial_lat);
-                previous_location.setLongitude(initial_long);
+  public void SimulateGPSMouvement(){
 
 
-                initial_lat += 0.00005; //steps mouvement
-                initial_long += 0.00005; //steps mouvement
+        timer = new Timer();
+      timer.scheduleAtFixedRate(new TimerTask() {
+          @Override
+          public void run() {
 
-                Location new_location = new Location("");
-                new_location.setLatitude(initial_lat);
-                new_location.setLongitude(initial_long);
+              Random random = new Random();
+              final int speed = random.nextInt(90-10)+10 ;
+              runOnUiThread(new Runnable() {
+                  public void run() {
+                      speedometer.updateSpeed(speed);
+                      speedoMeterView.setSpeed(speed,false);
+                  }
+              });
 
+              if(data.isRunning()){
+                  date = Calendar.getInstance();
 
-                float distanceInMeters = previous_location.distanceTo(new_location); //distance between the previous location and the new one
-                // in this case distanceInMeters = 1.48 meter
-
-
-                Location loc = new Location(mocLocationProvider);
-                Location mockLocation = new Location(mocLocationProvider); // a string
-                mockLocation.setLatitude(initial_lat);
-                mockLocation.setLongitude(initial_long);
-                mockLocation.setAltitude(loc.getAltitude());
-                mockLocation.setTime(System.currentTimeMillis());
-                mockLocation.setAccuracy(1);
-                Random random = new Random();
-                mockLocation.setSpeed(random.nextInt(90-10)+10); //speed is should be reasonable with distance
-                mockLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
-                mLocationManager.setTestProviderLocation( mocLocationProvider, mockLocation); //invoke location change
-                if(data.isRunning()){
-                    date = Calendar.getInstance();
-
-                    String time = date.get(Calendar.HOUR_OF_DAY)+":"+(date.get(Calendar.MINUTE))+":"+(date.get(Calendar.SECOND));
-                    if(!seconds.contains(time)){
-                        VitesseData vitesseData = new VitesseData(time,speed);
-                        StatsActivity.vitesseList.add(vitesseData);
-                        seconds.add(time);
-                    }
-                }
-
-            }
-        }, 0, 1000);
+                  String time = date.get(Calendar.HOUR_OF_DAY)+":"+(date.get(Calendar.MINUTE))+":"+(date.get(Calendar.SECOND));
+                  if(!seconds.contains(time)){
+                      double speed_value = speed ;
+                      VitesseData vitesseData = new VitesseData(time,speed_value);
+                      StatsActivity.vitesseList.add(vitesseData);
+                      seconds.add(time);
+                  }
+              }
+          }
+      }, 0, 1000);
     }
 
+
+    @Override
+    public void onClick(View view) {
+        switch(view.getId()){
+            case   R.id.switch_auto_manual :
+                if(auto_gps){
+                    auto_gps=false ;
+                    SimulateGPSMouvement();
+                    switcher.setText("Simulator");
+                    speedometer.updateSpeed(0);
+                    speedoMeterView.setSpeed(0,false);
+                }else{
+                    timer.cancel();
+                    timer = null ;
+                    auto_gps = true ;
+                    switcher.setText("GPS");
+                }
+        }
+    }
 }
