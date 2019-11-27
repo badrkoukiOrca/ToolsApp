@@ -94,8 +94,12 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
         speedometer = findViewById(R.id.speed_view);
         speedoMeterView = findViewById(R.id.speedometerview);
         switcher = findViewById(R.id.switch_auto_manual);
+        chronometer = (Chronometer) findViewById(R.id.chrono);
         switcher.setOnClickListener(this);
         auto_gps = true ;
+
+        mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -140,7 +144,7 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
                 s.setSpan(new RelativeSizeSpan(0.5f), s.length() - distanceUnits.length() - 1, s.length(), 0);*/
             }
         };
-        mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
         /*
 
         final String mocLocationProvider = LocationManager.GPS_PROVIDER;
@@ -167,9 +171,6 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
 
 
 
-
-
-        chronometer = (Chronometer) findViewById(R.id.chrono);
         chronometer.setText("00:00:00");
         chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             boolean isPair = true;
@@ -209,22 +210,26 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
     }
 
     public void onFabClick(View v) {
-        if (!data.isRunning()) {
-            SpeedHistory.speedHistory = new ArrayList<>();
-            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_pause));
-            data.setRunning(true);
-            chronometer.setBase(SystemClock.elapsedRealtime());
-            chronometer.start();
-            data.setFirstTime(true);
-            startService(new Intent(getBaseContext(), GpsServices.class));
 
-        } else
+            if (!data.isRunning()) {
+                fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_pause));
+                data.setRunning(true);
+                chronometer.setBase(SystemClock.elapsedRealtime());
+                chronometer.start();
+                data.setFirstTime(true);
+                if(auto_gps){
+                    startService(new Intent(getBaseContext(), GpsServices.class));
+                }
+            } else
             {
-            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_play));
-            data.setRunning(false);
-            stopService(new Intent(getBaseContext(), GpsServices.class));
-            startActivity(new Intent(GpsActivity.this,StatsActivity.class));
-        }
+                fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_play));
+                data.setRunning(false);
+                if(auto_gps){
+                    stopService(new Intent(getBaseContext(), GpsServices.class));
+                }
+                startActivity(new Intent(GpsActivity.this,StatsActivity.class));
+                chronometer.setBase(SystemClock.elapsedRealtime());
+            }
     }
 
 
@@ -337,12 +342,6 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
                             satsUsed++;
                         }
                     }
-                    if (satsUsed == 0) {
-                        fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_play));
-                        data.setRunning(false);
-                        stopService(new Intent(getBaseContext(), GpsServices.class));
-                        firstfix = true;
-                    }
                 }
 
                 break;
@@ -355,14 +354,6 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
 
     public static Data getData() {
         return data;
-    }
-
-    @Override
-    public void onBackPressed(){
-        Intent a = new Intent(Intent.ACTION_MAIN);
-        a.addCategory(Intent.CATEGORY_HOME);
-        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(a);
     }
 
     @Override
@@ -388,8 +379,6 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
         mMap.addMarker(new MarkerOptions().position(position).title("Boat")).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.boat));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(position));
         mMap.animateCamera( CameraUpdateFactory.zoomTo( 20.0f ) );
-
-
 
     }
 
@@ -432,17 +421,33 @@ public class GpsActivity extends AppCompatActivity implements LocationListener, 
         switch(view.getId()){
             case   R.id.switch_auto_manual :
                 if(auto_gps){
+                    reset_state();
                     auto_gps=false ;
-                    SimulateGPSMouvement();
-                    switcher.setText("Simulator");
-                    speedometer.updateSpeed(0);
-                    speedoMeterView.setSpeed(0,false);
+                    SimulateGPSMouvement();//starting simulation
+                    switcher.setText("Simulateur");
                 }else{
-                    timer.cancel();
-                    timer = null ;
+                    reset_state();
+                    timer.cancel();//stopping simulation
                     auto_gps = true ;
                     switcher.setText("GPS");
                 }
         }
+    }
+
+    public void reset_state(){
+        //reset chrono
+        chronometer.setBase(SystemClock.elapsedRealtime());
+        //reset button
+        fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_action_play));
+        //stop data running
+        data.setRunning(false);
+        //stop service
+        stopService(new Intent(getBaseContext(), GpsServices.class));
+        firstfix = true;
+        //reset saved vitesses
+        StatsActivity.vitesseList = new ArrayList<VitesseData>();
+        //reset speed in interface
+        speedometer.updateSpeed(0);
+        speedoMeterView.setSpeed(0,false);
     }
 }
